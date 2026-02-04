@@ -1,5 +1,7 @@
 import re
 
+from typing_extensions import Text
+
 from textnode import TextNode, TextType
 
 
@@ -30,7 +32,29 @@ def extract_markdown_images(text):
     return matches
 
 
+# [
+#   ("rick roll", "https://i.imgur.com/aKaOqIh.gif"),
+#   ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")
+# ]
+
+
 def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
     return matches
+
+
+# [
+#   ("to boot dev", "https://www.boot.dev"),
+#   ("to youtube", "https://www.youtube.com")
+# ]
+
+
+def split_nodes_image(old_nodes):
+    pass
+
+
+def split_nodes_link(old_nodes):
+    new_nodes =
+    delimeter = "["
+    for node in old_nodes:
