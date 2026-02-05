@@ -30,22 +30,10 @@ def extract_markdown_images(text):
     return matches
 
 
-# [
-#   ("rick roll", "https://i.imgur.com/aKaOqIh.gif"),
-#   ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")
-# ]
-
-
 def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
     return matches
-
-
-# [
-#   ("to boot dev", "https://www.boot.dev"),
-#   ("to youtube", "https://www.youtube.com")
-# ]
 
 
 def split_nodes_image(old_nodes):
@@ -104,11 +92,11 @@ def split_nodes_link(old_nodes):
     return nodes
 
 
-"""
-if __name__ == "__main__":
-    node = TextNode(
-        "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
-        TextType.TEXT,
-    )
-    split_nodes_image([node])
-"""
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
