@@ -1,7 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
-from textnode import TextNode, TextType
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -80,60 +79,35 @@ class TestHTMLNode(unittest.TestCase):
             "<div><span><b>grandchild</b></span></div>",
         )
 
-    def test_deep_nested_nodes(self):
-        grangranchild_node = LeafNode("p", "Hello World")
-        grandchild_node = ParentNode("div", [grangranchild_node])
-        child_node = ParentNode("span", [grandchild_node])
-        parent_node = ParentNode("div", [child_node])
+    def test_to_html_many_children(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
         self.assertEqual(
-            parent_node.to_html(),
-            "<div><span><div><p>Hello World</p></div></span></div>",
+            node.to_html(),
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
         )
 
-    def test_text(self):
-        node = TextNode("This is a text node", TextType.TEXT)
-        html_node = text_node_to_html_node(node)
-        self.assertEqual(html_node.tag, None)
-        self.assertEqual(html_node.value, "This is a text node")
-
-    def test_image(self):
-        node = TextNode(
-            text="This is a image url",
-            text_type=TextType.IMAGE,
-            url="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/arch-linux.png",
+    def test_headings(self):
+        node = ParentNode(
+            "h2",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
         )
-        html_node = text_node_to_html_node(node)
-        self.assertEqual(html_node.tag, "img")
-        self.assertEqual(html_node.value, "")
         self.assertEqual(
-            html_node.props,
-            {
-                "src": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/arch-linux.png",
-                "alt": "This is a image url",
-            },
+            node.to_html(),
+            "<h2><b>Bold text</b>Normal text<i>italic text</i>Normal text</h2>",
         )
-
-    def test_link(self):
-        node = TextNode(
-            text="This is a link",
-            text_type=TextType.LINK,
-            url="https://example.com",
-        )
-        html_node = text_node_to_html_node(node)
-        self.assertEqual(html_node.tag, "a")
-        self.assertEqual(html_node.value, "This is a link")
-        self.assertEqual(
-            html_node.props,
-            {
-                "href": "https://example.com",
-            },
-        )
-
-    def test_bold(self):
-        node = TextNode("This is bold", TextType.BOLD)
-        html_node = text_node_to_html_node(node)
-        self.assertEqual(html_node.tag, "b")
-        self.assertEqual(html_node.value, "This is bold")
 
 
 if __name__ == "__main__":
